@@ -13,8 +13,19 @@ public class Main {
 
     public static void main(String[] args) throws JAXBException {
 
+        String pathToXes = null;
+        try
+        {
+            pathToXes = args[0];
+        }
+        catch (ArrayIndexOutOfBoundsException aioobe)
+        {
+            System.err.println("Usage: java Main.java [xesFile]");
+            System.exit(1);
+        }
+
         //Load XES-File into a EventLog instance
-        String pathToXes = "C:\\Users\\bt304947\\Documents\\sampleXesSingle.xes";
+        pathToXes = args[0];
         File xesFile = new File(pathToXes);
 
         EventLog eventLog = XesLoader.loadXes(xesFile);
