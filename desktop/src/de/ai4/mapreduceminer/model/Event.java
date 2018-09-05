@@ -53,6 +53,9 @@ public class Event {
     {
         Event other = (Event) o;
 
+        if(other.getAttributes().size() != this.attributes.size())
+            return false;
+
         for (int i = 0; i < other.getAttributes().size(); i++) {
             if(other.getAttributes().get(i).getKey().equals(this.attributes.get(i).getKey()) &&
                     other.getAttributes().get(i).getValue().equals(this.attributes.get(i).getValue()))

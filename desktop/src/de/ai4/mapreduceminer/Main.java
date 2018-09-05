@@ -1,15 +1,19 @@
 package de.ai4.mapreduceminer;
 
+import de.ai4.mapreduceminer.model.Attribute;
 import de.ai4.mapreduceminer.model.Event;
 import de.ai4.mapreduceminer.model.EventLog;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
+
+    static List<String> dimensionsA;
+    static List<String> dimensionsB;
+
 
     public static void main(String[] args) throws JAXBException {
 
@@ -17,10 +21,12 @@ public class Main {
         try
         {
             pathToXes = args[0];
+            dimensionsA = Arrays.asList(args[1].split(","));
+            dimensionsB = Arrays.asList(args[2].split(","));
         }
         catch (ArrayIndexOutOfBoundsException aioobe)
         {
-            System.err.println("Usage: java Main.java [xesFile]");
+            System.err.println("Usage: java Main.java xesFile dimensionsA dimensionsB ");
             System.exit(1);
         }
 
@@ -37,8 +43,14 @@ public class Main {
                 {
                     Database database = new Database();
 
-                    List<Event> eventsA = trace.getEvents();
-                    List<Event> eventsB = trace.getEvents();
+                    List<Event> eventsA = trace.getEvents().stream().map(
+                            event -> new Event(event.getAttributes().stream().filter(attribute -> dimensionsA.contains(attribute.getKey())).collect(Collectors.toList()))
+                    ).collect(Collectors.toList());
+
+                    List<Event> eventsB = trace.getEvents().stream().map(event ->
+                            new Event(event.getAttributes().stream().filter(attribute -> dimensionsB.contains(attribute.getKey())).collect(Collectors.toList()))
+                    ).collect(Collectors.toList());
+
 
                     List<String> tasksResponse = new ArrayList<>();
                     List<Event> uniqueEventsInTrace = new ArrayList<>();
@@ -49,7 +61,7 @@ public class Main {
                          * ETA
                          */
                         database.addEta(eventsA.get(i), 1);
-                        if (("dimensionsA").equals("dimensionsB")) {
+                        if (!args[0].equals(args[1])) {
                             database.addEta(eventsB.get(i), 1);
                         }
 
@@ -57,7 +69,7 @@ public class Main {
                         if (!uniqueEventsInTrace.contains(eventsA.get(i))) {
                             uniqueEventsInTrace.add(eventsA.get(i));
                         }if (!uniqueEventsInTrace.contains(eventsB.get(i))) {
-                            uniqueEventsInTrace.add(eventsA.get(i));
+                            uniqueEventsInTrace.add(eventsB.get(i));
                         }
 
                         for (int j = i + 1; j < trace.getEvents().size(); j++) {
@@ -75,7 +87,7 @@ public class Main {
                     for(Event uniqueEvent : uniqueEventsInTrace) {
                         database.addEpsilon(uniqueEvent, 1);
                     }
-                        return database;
+                    return database;
                 }
         ).reduce((accDb, currentDb) -> {
 
@@ -127,9 +139,6 @@ public class Main {
             System.out.println("Confidence(" + currentEntry.getKey() + ") = \t" + confidence);
         }
 
-
-        System.out.println(db);
     }
-
 
 }
