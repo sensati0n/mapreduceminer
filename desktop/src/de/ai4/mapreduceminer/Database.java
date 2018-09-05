@@ -37,17 +37,17 @@ class Tuple<Event> {
 }
 
 public class Database {
-    
+
     //Eta
     private Map<Event, Integer> eta;
-
 
     //Epsilon
     private Map<Event, Integer> epsilon;
 
-
     //Sigma
-    private Map<Tuple<Event>, Integer> response;
+    private Map<Constraint, Map<Tuple<Event>, Integer>> sigma;
+
+  /*  private Map<Tuple<Event>, Integer> response;
     private Map<Tuple<Event>, Integer> alternateResponse;
     private Map<Tuple<Event>, Integer> chainResponse;
     private Map<Tuple<Event>, Integer> precedence;
@@ -55,19 +55,21 @@ public class Database {
 
 
     private Map<Tuple<Event>, Integer> alternatePrecedence;
-    private Map<Tuple<Event>, Integer> chainPrecedence;
+    private Map<Tuple<Event>, Integer> chainPrecedence;*/
 
     public Database()
     {
         this.eta = new HashMap<>();
         this.epsilon = new HashMap<>();
 
-        this.response = new HashMap<>();
-        this.alternateResponse = new HashMap<>();
-        this.chainResponse = new HashMap<>();
-        this.precedence = new HashMap<>();
-        this.alternatePrecedence = new HashMap<>();
-        this.chainPrecedence = new HashMap<>();
+        this.sigma = new HashMap<>();
+
+        this.sigma.put(Constraint.RESPONSE, new HashMap<>());
+        this.sigma.put(Constraint.ALTERNATE_RESPONSE, new HashMap<>());
+        this.sigma.put(Constraint.CHAIN_RESPONSE, new HashMap<>());
+        this.sigma.put(Constraint.PRECEDENCE, new HashMap<>());
+        this.sigma.put(Constraint.ALTERNATE_PRECEDENCE, new HashMap<>());
+        this.sigma.put(Constraint.CHAIN_PRECEDENCE, new HashMap<>());
     }
 
 
@@ -110,13 +112,8 @@ public class Database {
      */
     public void addSigma(Constraint constraint, Tuple<Event> eventTuple, int value)
     {
-        Map<Tuple<Event>, Integer> constraintMap = null;
-        switch(constraint)
-        {
-            case RESPONSE:
-                constraintMap = this.response;
-                break;
-        }
+        Map<Tuple<Event>, Integer> constraintMap = this.sigma.get(constraint);
+
         if(constraintMap.containsKey(eventTuple)) {
             int currentValue = constraintMap.get(eventTuple);
             constraintMap.remove(eventTuple);
@@ -139,28 +136,8 @@ public class Database {
         return epsilon;
     }
 
-    public Map<Tuple<Event>, Integer> getResponse() {
-        return response;
-    }
-
-    public Map<Tuple<Event>, Integer> getAlternateResponse() {
-        return alternateResponse;
-    }
-
-    public Map<Tuple<Event>, Integer> getChainResponse() {
-        return chainResponse;
-    }
-
-    public Map<Tuple<Event>, Integer> getPrecedence() {
-        return precedence;
-    }
-
-    public Map<Tuple<Event>, Integer> getAlternatePrecedence() {
-        return alternatePrecedence;
-    }
-
-    public Map<Tuple<Event>, Integer> getChainPrecedence() {
-        return chainPrecedence;
+    public Map<Tuple<Event>, Integer> getSigmaEntry(Constraint constraint) {
+        return this.sigma.get(constraint);
     }
 
 
