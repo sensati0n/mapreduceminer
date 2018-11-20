@@ -6,4 +6,5 @@ import de.ubt.ai4.mapreduceminer.result.ResultElement;
 public interface Constraint {
 
     ResultElement getResult(Database db, double sigma, int logSize);
+
 }

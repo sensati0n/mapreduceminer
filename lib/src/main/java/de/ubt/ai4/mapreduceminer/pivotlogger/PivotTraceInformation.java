@@ -9,23 +9,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class PivotTraceTypeInformation {
 
-    private Class constraint;
-
-    public PivotList pivotListActivation = new PivotList(constraint, "activation");
-    public PivotList pivotListTarget = new PivotList(constraint, "target");
-
-    public PivotTraceTypeInformation(Class c) {
-        this.constraint = c;
-    }
-}
 
 public class PivotTraceInformation {
 
     private final Trace trace;
 
     private List<PivotTraceTypeInformation> ptti;
+
+    public List<PivotTraceTypeInformation> getPtti() {
+        return this.ptti;
+    }
+
+    public void setPtti(List<PivotTraceTypeInformation> ptti) {
+        this.ptti = ptti;
+    }
 
     private Map<Class, PivotTraceTypeInformation> pttiHelperMap = new HashMap<>();
 

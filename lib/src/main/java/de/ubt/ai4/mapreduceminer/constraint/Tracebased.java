@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface Tracebased extends Constraint {
 
-    List<Tracebased> logic(AuxilaryDatabase ad, int position, int size);
+    boolean logic(AuxilaryDatabase ad, int position, int size);
 
 
 }

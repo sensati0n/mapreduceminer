@@ -14,15 +14,15 @@ public class MiningResult {
     public MiningResult() { }
 
     public void addResult(SingleEventConstraint constraint, double support, double confidence) {
-        this.results.add(new ResultElement(constraint.getClass().toString(), constraint.getEvent(), support, confidence));
+        this.results.add(new ResultElement(constraint.getClass().toString(), constraint.getEvent(), support, confidence, constraint.getType()));
     }
 
     public void addResult(DoubleEventConstraint constraint, double support, double confidence) {
-        this.results.add(new ResultElement(constraint.getClass().toString(), constraint.getEventTuple().x, constraint.getEventTuple().y, support, confidence));
+        this.results.add(new ResultElement(constraint.getClass().toString(), constraint.getEventTuple().x, constraint.getEventTuple().y, support, confidence,  constraint.getType()));
     }
 
     public void addResult(IntEventConstraint constraint, double support, double confidence) {
-        this.results.add(new ResultElement(constraint.getClass().toString(), constraint.getEvent(), constraint.getN(), support, confidence));
+        this.results.add(new ResultElement(constraint.getClass().toString(), constraint.getEvent(), constraint.getN(), support, confidence,  constraint.getType()));
     }
 
     public void addResult(ResultElement resultElement) {

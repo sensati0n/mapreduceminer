@@ -13,7 +13,6 @@ import de.ubt.ai4.mapreduceminer.pivotlogger.PivotTraceInformation;
 import de.ubt.ai4.mapreduceminer.result.MiningResult;
 import de.ubt.ai4.mapreduceminer.util.*;
 
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -50,7 +49,6 @@ public class JobRunner {
         return configuration;
     }
 
-
     private void calcS(Database db) {
 
         MiningResult result = new MiningResult();
@@ -58,7 +56,8 @@ public class JobRunner {
         for (Class constraint : configuration.getConstraints()) {
 
             for (Map.Entry<Constraint, Integer> currentEntry : db.getSigmaEntry(constraint).entrySet()) {
-                result.addResult(currentEntry.getKey().getResult(db, currentEntry.getValue(), eventLog.getTraces().size()));
+                result.addResult(
+                        currentEntry.getKey().getResult(db, currentEntry.getValue(), eventLog.getTraces().size()));
             }
         }
         this.miningResult = result;
@@ -66,18 +65,23 @@ public class JobRunner {
 
     public void run() {
 
-        //MR-I: produce Key-Value-Pairs
-        Database db = eventLog.getTraces().stream()
-                .parallel().map((trace) -> map(trace))
-                .reduce((accDb, currentDb) -> reduce(accDb, currentDb))
-                .get();
+        // MR-I: produce Key-Value-Pairs
+        Database db = eventLog.getTraces().stream().map((trace) -> map(trace))
+                .reduce((accDb, currentDb) -> reduce(accDb, currentDb)).get();
 
-        //'MR-II': calculate Support and Confidence
+
+                for(Map.Entry<Tuple<Event>, Integer> curr : db.getTwoDimEpsilon().entrySet()) {
+                    System.out.println("funcEPSILON: \t" + curr.getKey() + ", " + curr.getValue());
+
+                }
+
+
+        // 'MR-II': calculate Support and Confidence
         calcS(db);
 
     }
 
-    private Constraint instantiate(Class<Constraint> c, Event eventA, Event eventB, ConstraintType type) {
+    private Constraint instantiate(Class<Constraint> c, Event eventA, Event eventB, int n, ConstraintType type) {
 
         Constraint impl = null;
         try {
@@ -92,6 +96,7 @@ public class JobRunner {
                 ((SingleEventConstraint) impl).setType(type);
             } else if (impl instanceof IntEventConstraint) {
                 ((IntEventConstraint) impl).setEvent(eventA);
+                ((IntEventConstraint) impl).setN(n);
                 ((IntEventConstraint) impl).setType(type);
             }
         } catch (InstantiationException e) {
@@ -118,15 +123,15 @@ public class JobRunner {
 
         AuxilaryDatabase activationAD = new AuxilaryDatabase();
         AuxilaryDatabase targetAD = new AuxilaryDatabase();
-        AuxilaryDatabase correlationAD = new AuxilaryDatabase();
-
 
         activationAD.first = events.get(0);
         activationAD.last = events.get(events.size() - 1);
 
-
         for (int i = 0; i < trace.getEvents().size(); i++) {
+            activationAD.currentI = i;
+            targetAD.currentI = i;
 
+            activationAD.addToEventCounter(events.get(i));
             /**
              * ETA
              */
@@ -135,89 +140,102 @@ public class JobRunner {
                 database.addEta(events.get(i).filter(eventIdentifier, additionalAttribute), 1);
             }
 
-            //for epsilon:
+            // for epsilon:
             if (!activationAD.uniqueEventsInTrace.contains(events.get(i).filter(eventIdentifier))) {
                 activationAD.uniqueEventsInTrace.add(events.get(i).filter(eventIdentifier));
             }
-            if (!activationAD.uniqueEventsInTrace.contains(events.get(i).filter(eventIdentifier, additionalAttribute))) {
+            if (!activationAD.uniqueEventsInTrace
+                    .contains(events.get(i).filter(eventIdentifier, additionalAttribute))) {
                 activationAD.uniqueEventsInTrace.add(events.get(i).filter(eventIdentifier, additionalAttribute));
             }
 
+            for (int j = 0; j < trace.getEvents().size(); j++) {
+                activationAD.currentJ = j;
+                targetAD.currentJ = j;
 
-            for (int j = i + 1; j < trace.getEvents().size(); j++) {
+                if (j >= i+1) {
+                    if (!(activationAD.uniqueEventCombinationInTrace.contains(new Tuple<>(events.get(i).filter(eventIdentifier), events.get(j).filter(eventIdentifier))))) {
+                        activationAD.uniqueEventCombinationInTrace.add(new Tuple<>(events.get(i).filter(eventIdentifier), events.get(j).filter(eventIdentifier)));
+                    }
+                    if (!(activationAD.uniqueEventCombinationInTrace.contains(new Tuple<>(events.get(i).filter(eventIdentifier, additionalAttribute), events.get(j).filter(eventIdentifier, additionalAttribute))))) {
+                        activationAD.uniqueEventCombinationInTrace.add(new Tuple<>(events.get(i).filter(eventIdentifier, additionalAttribute), events.get(j).filter(eventIdentifier, additionalAttribute)));
+                    }
+                }
+
                 for (Class<Constraint> c : getConfiguration().getConstraints()) {
-                    Constraint impl = instantiate(c, events.get(i), events.get(j), ConstraintType.ACTIVATION);
-                    Constraint implTarget = instantiate(c, events.get(i), events.get(j), ConstraintType.TARGET);
+                    Constraint impl = instantiate(c, events.get(i).filter(eventIdentifier, additionalAttribute), events.get(j).filter(eventIdentifier), -1, ConstraintType.ACTIVATION);
+                    Constraint implTarget = instantiate(c, events.get(i).filter(eventIdentifier), events.get(j).filter(eventIdentifier, additionalAttribute), -1,  ConstraintType.TARGET);
 
-                       /* if(impl instanceof Tracebased) {
-                            Tracebased traceBasedImpl = (Tracebased) impl;
-                            Tracebased traceBasedImplTarget = (Tracebased) implTarget;
-                            for(Tracebased k : traceBasedImpl.logic(activationAD))
-                                database.addSigma(k, 1);
-*/
-                    //    for(Tracebased k : traceBasedImplTarget.logic(targetAD))
-                    //        database.addSigma(traceBasedImplTarget, 1);
-                    //      }
-                    //     else
                     if (impl instanceof Eventbased) {
                         Eventbased eventBasedImpl = (Eventbased) impl;
                         Eventbased eventBasedImplTarget = (Eventbased) implTarget;
-                        if (eventBasedImpl.logic(activationAD))
+                     if (eventBasedImpl.logic(activationAD))
                             database.addSigma(eventBasedImpl, 1);
                         else
                             pti.addPivot(impl.getClass(), i, j, "activation");
-
-                        if (eventBasedImplTarget.logic(targetAD))
-                            database.addSigma(implTarget, 1);
-                        else
-                            pti.addPivot(implTarget.getClass(), i, j, "target");
+ 
+                       if (eventBasedImplTarget.logic(targetAD))
+                           database.addSigma(implTarget, 1);
+                      else
+                          pti.addPivot(implTarget.getClass(), i, j, "target");
                     }
                 }
             }
-            activationAD.clear();
-            targetAD.clear();
+                     
+
+            activationAD.clearEventBased();
+            targetAD.clearEventBased();
         }
 
-        for (int k = 0; k < trace.getEvents().size(); k++) {
-            /**
-             * EPSILON
-             */
-            if (activationAD.uniqueEventsInTrace.contains(events.get(k)))
-                database.addEpsilon(events.get(k), 1);
-
+        for(Map.Entry<Event, Integer> entry : activationAD.eventCounter.entrySet()){
             for (Class<Constraint> c : getConfiguration().getConstraints()) {
-                Constraint impl = instantiate(c, events.get(k), null, ConstraintType.ACTIVATION);
-
+                Constraint impl = instantiate(c, entry.getKey(), null, entry.getValue(), ConstraintType.ACTIVATION);
                 if (impl instanceof Tracebased) {
                     Tracebased traceBasedImpl = (Tracebased) impl;
-                    for (Tracebased t : traceBasedImpl.logic(activationAD, k, events.size())) {
-                        database.addSigma(t, 1);
-                    }
+                    if(traceBasedImpl.logic(activationAD, -1, events.size()))
+                        database.addSigma(traceBasedImpl, 1);
+    
+                } else {
+                    // No Eventbased Constraints are considered here.
                 }
             }
         }
+
+        for (Event uniqueEvent : activationAD.uniqueEventsInTrace) {
+          database.addEpsilon(uniqueEvent, 1);
+
+        }
+        for (Tuple<Event> uniqueEventCombination : activationAD.uniqueEventCombinationInTrace) {
+            database.addTwoDimEpsilon(uniqueEventCombination, 1);
+          }
+
         pivotLogger.addPivotTraceInformation(pti);
 
         return database;
 
     }
 
-
     private Database reduce(Database currentDb, Database accDb) {
 
-        //ETA
+        // ETA
         for (Map.Entry<Event, Integer> currentEntry : currentDb.getEta().entrySet()) {
             int currentDbValue = currentEntry.getValue();
             accDb.addEta(currentEntry.getKey(), currentDbValue);
         }
 
-        //EPSILON
+        // EPSILON
         for (Map.Entry<Event, Integer> currentEntry : currentDb.getEpsilon().entrySet()) {
             int currentDbValue = currentEntry.getValue();
             accDb.addEpsilon(currentEntry.getKey(), currentDbValue);
         }
+         // 2-dim EPSILON
+         for (Map.Entry<Tuple<Event>, Integer> currentEntry : currentDb.getTwoDimEpsilon().entrySet()) {
+            int currentDbValue = currentEntry.getValue();
+            accDb.addTwoDimEpsilon(currentEntry.getKey(), currentDbValue);
 
-        //SIGMA
+        }
+
+        // SIGMA
         for (Class constraint : configuration.getConstraints()) {
             for (Map.Entry<Constraint, Integer> currentEntry : currentDb.getSigmaEntry(constraint).entrySet()) {
                 Constraint currentTuple = currentEntry.getKey();

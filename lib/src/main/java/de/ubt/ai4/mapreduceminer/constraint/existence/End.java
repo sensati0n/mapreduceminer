@@ -22,18 +22,38 @@ public class End extends SingleEventConstraint implements Tracebased {
     }
 
     @Override
-    public List<Tracebased> logic(AuxilaryDatabase ad, int position, int size) {
+    public boolean logic(AuxilaryDatabase ad, int position, int size) {
 
-        List<Tracebased> result = new ArrayList<>();
         if(position == size-1)
-            result.add(new End(ad.last, ConstraintType.ACTIVATION));
-
-        return result;
+        return true;
+        else
+        return false;
     }
 
+    
 
     @Override
     public ResultElement getResult(Database db, double sigma, int logSize) {
-        return new ResultElement(this.getClass().toString(), getEvent(), sigma/logSize, 0.0d);
+        return new ResultElement(this.getClass().toString(), getEvent(), sigma/logSize, 0.0d, this.getType());
+    }
+
+    @Override
+    public int hashCode() {
+        return 3^this.getEvent().hashCode() * 5^this.getType().hashCode() ;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+       
+        End other = (End) o;
+
+        if(other.getEvent().equals(this.getEvent())) {
+            if(other.getType().equals(this.getType()))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

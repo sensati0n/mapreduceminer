@@ -21,13 +21,16 @@ public class Response extends DoubleEventConstraint implements Eventbased {
 
     }
 
-
     @Override
     public boolean logic(AuxilaryDatabase ad) {
+
+        if(ad.currentJ < ad.currentI+1)
+            return false;
+
         Event filteredEventB = super.getEventB();
         switch (super.getType()) {
             case ACTIVATION:
-                filteredEventB = filteredEventB.filter(super.getEventIdentifier());
+                filteredEventB  = filteredEventB.filter(super.getEventIdentifier());
                 break;
             case TARGET:
                 filteredEventB = filteredEventB.filter(super.getEventIdentifier(), super.getAdditionalAttribute());
@@ -53,7 +56,29 @@ public class Response extends DoubleEventConstraint implements Eventbased {
 
         //System.out.println("Support(" + constraint.getName() + currentEntry.getKey() + ") = \t\t" + support);
         //System.out.println("Confidence(" + currentEntry.getKey() + ") = \t" + confidence);
-        return new ResultElement(this.getClass().toString(), getEventA(), getEventB(), support, confidence);
+        return new ResultElement(this.getClass().toString(), getEventA(), getEventB(), support, confidence, this.getType());
 
+    }
+
+    @Override
+    public int hashCode() {
+        return 3^this.getEventA().hashCode() * 5^this.getEventB().hashCode() * 7^this.getType().hashCode() ;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+       
+        Response other = (Response) o;
+
+        if(other.getEventA().equals(this.getEventA())) {
+            if(other.getEventB().equals(this.getEventB())) {
+                if(other.getType().equals(this.getType()))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

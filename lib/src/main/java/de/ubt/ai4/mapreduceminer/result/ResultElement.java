@@ -1,6 +1,7 @@
 package de.ubt.ai4.mapreduceminer.result;
 
 import de.ubt.ai4.mapreduceminer.model.Event;
+import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 
 
 public class ResultElement {
@@ -31,8 +32,11 @@ public class ResultElement {
     public double getConfidence() { return confidence; }
     public void setConfidence(double confidence) { this.confidence = confidence; }
 
+    private ConstraintType type;
+    public ConstraintType getType() { return this.type; }
+    public void setType(ConstraintType type) { this.type = type; }
 
-    public ResultElement(String template, Event eventA, Event eventB, double support, double confidence) {
+    public ResultElement(String template, Event eventA, Event eventB, double support, double confidence, ConstraintType type) {
 
         this.template = template;
 
@@ -41,9 +45,11 @@ public class ResultElement {
 
         this.support = support;
         this.confidence = confidence;
+
+        this.type = type;
     }
 
-    public ResultElement(String template, Event event, double support, double confidence) {
+    public ResultElement(String template, Event event, double support, double confidence, ConstraintType type) {
 
         this.template = template;
 
@@ -51,9 +57,12 @@ public class ResultElement {
 
         this.support = support;
         this.confidence = confidence;
+
+        this.type = type;
+
     }
 
-    public ResultElement(String template, Event event, Integer n, double support, double confidence) {
+    public ResultElement(String template, Event event, Integer n, double support, double confidence, ConstraintType type) {
 
         this.template = template;
 
@@ -62,6 +71,9 @@ public class ResultElement {
 
         this.support = support;
         this.confidence = confidence;
+
+        this.type = type;
+
     }
 
 }

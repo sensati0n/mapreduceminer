@@ -23,12 +23,12 @@ public class Participation extends SingleEventConstraint implements Tracebased {
     }
 
     @Override
-    public List<Tracebased> logic(AuxilaryDatabase ad, int position, int size) {
-        List<Tracebased> result = new ArrayList<>();
-        result.add(new Participation(this.getEvent(), ConstraintType.ACTIVATION));
-        return result;
-
-    }
+    public boolean logic(AuxilaryDatabase ad, int position, int size) {
+        
+        if(ad.eventCounter.get(super.getEvent())>=(1))
+            return true;
+        return false;
+}
 
     @Override
     public ResultElement getResult(Database db, double sigma, int logSize) {
@@ -36,8 +36,29 @@ public class Participation extends SingleEventConstraint implements Tracebased {
         double support = sigma / logSize;
 
         int currentEpsilon = db.getEpsilon().get(getEvent());
+        System.out.println("eps(" + super.getEvent() + ")" + currentEpsilon);
         double confidence = support * (currentEpsilon / (double) logSize);
 
-        return new ResultElement(this.getClass().toString(), getEvent(),  support, confidence);
+        return new ResultElement(this.getClass().toString(), getEvent(),  support, confidence, this.getType());
+    }
+    
+    @Override
+    public int hashCode() {
+        return 3^this.getEvent().hashCode() * 5^this.getType().hashCode() ;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+       
+        Participation other = (Participation) o;
+
+        if(other.getEvent().equals(this.getEvent())) {
+            if(other.getType().equals(this.getType()))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

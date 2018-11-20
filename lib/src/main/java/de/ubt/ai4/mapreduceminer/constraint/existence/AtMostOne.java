@@ -8,35 +8,37 @@ import de.ubt.ai4.mapreduceminer.result.ResultElement;
 import de.ubt.ai4.mapreduceminer.util.AuxilaryDatabase;
 import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-public class Init extends SingleEventConstraint implements Tracebased {
 
-    public Init() {
+public class AtMostOne extends SingleEventConstraint implements Tracebased {
+
+    public AtMostOne() {
 
     }
 
-    public Init(Event event, ConstraintType type) {
+    public AtMostOne(Event event, ConstraintType type) {
         super(event, type);
 
     }
 
     @Override
     public boolean logic(AuxilaryDatabase ad, int position, int size) {
-
-        if(position == 0)
+        
+        if(ad.eventCounter.get(super.getEvent()).equals(1))
             return true;
-            else
-            return false;
-    }
+        return false;
+}
 
     @Override
     public ResultElement getResult(Database db, double sigma, int logSize) {
-        return new ResultElement(this.getClass().toString(), getEvent(), sigma/logSize, 0.0d, this.getType());
-    }
+        double eta = db.getEta().get(getEvent());
+        double support = sigma / logSize;
 
+        int currentEpsilon = db.getEpsilon().get(getEvent());
+        double confidence = support * (currentEpsilon / (double) logSize);
+
+        return new ResultElement(this.getClass().toString(), getEvent(),  support, confidence, this.getType());
+    }
 
     @Override
     public int hashCode() {
@@ -46,7 +48,7 @@ public class Init extends SingleEventConstraint implements Tracebased {
     @Override
     public boolean equals(Object o) {
        
-        Init other = (Init) o;
+        AtMostOne other = (AtMostOne) o;
 
         if(other.getEvent().equals(this.getEvent())) {
             if(other.getType().equals(this.getType()))

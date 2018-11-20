@@ -28,14 +28,9 @@ public class Existence extends IntEventConstraint implements Tracebased {
 
 
     @Override
-    public List<Tracebased> logic(AuxilaryDatabase ad, int position, int size) {
-        List<Tracebased> result = new ArrayList<>();
-
-        for(int i = 0; i < ad.getOccurences(getEvent()); i++)
-        {
-            result.add(new Existence(getEvent(), i, getType()));
-        }
-        return result;
+    public boolean logic(AuxilaryDatabase ad, int position, int size) {
+     
+        return true;
     }
 
     @Override
@@ -46,6 +41,6 @@ public class Existence extends IntEventConstraint implements Tracebased {
         int currentEpsilon = db.getEpsilon().get(getEvent());
         double confidence = support * (currentEpsilon / (double) logSize);
 
-        return new ResultElement(this.getClass().toString(), getEvent(), getN(), support, confidence);
+        return new ResultElement(this.getClass().toString(), getEvent(), getN(), support, confidence, this.getType());
     }
 }

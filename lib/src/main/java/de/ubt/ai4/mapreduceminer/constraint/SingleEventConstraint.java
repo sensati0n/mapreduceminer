@@ -24,4 +24,6 @@ public abstract class SingleEventConstraint extends ConstraintImpl {
     public void setEvent(Event event) {
         this.event = event;
     }
+
+ 
 }

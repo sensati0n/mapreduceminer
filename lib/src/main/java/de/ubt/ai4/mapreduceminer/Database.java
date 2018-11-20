@@ -3,6 +3,7 @@ package de.ubt.ai4.mapreduceminer;
 import de.ubt.ai4.mapreduceminer.constraint.Constraint;
 import de.ubt.ai4.mapreduceminer.model.Event;
 import de.ubt.ai4.mapreduceminer.util.Configuration;
+import de.ubt.ai4.mapreduceminer.util.Tuple;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,18 +12,41 @@ public class Database {
 
     private Map<Event, Integer> eta;
     private Map<Event, Integer> epsilon;
+
+    private Map<Tuple<Event>, Integer> twoDimEpsilon;
+
+    public Map<Tuple<Event>, Integer> getTwoDimEpsilon() {
+        return twoDimEpsilon;
+    }
+
     private Map<Class, Map<Constraint, Integer>> sigma;
+
+
+    private Configuration configuration;
+
+    public Configuration getConfiguration() {
+        return this.configuration;
+    }
+
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
 
      public Database(Configuration configuration)
     {
         this.eta = new HashMap<>();
         this.epsilon = new HashMap<>();
+        this.twoDimEpsilon = new HashMap<>();
 
         this.sigma = new HashMap<>();
 
         for(Class constraint : configuration.getConstraints())
             this.sigma.put(constraint, new HashMap<>());
+
+    this.configuration = configuration;
+
     }
+
 
     public void addEta(Event event, int value)
     {
@@ -44,6 +68,16 @@ public class Database {
         }
         else
             this.epsilon.put(event, value);
+    }
+
+    public void addTwoDimEpsilon(Tuple<Event> eventTuple, int value) {
+        if (twoDimEpsilon.containsKey(eventTuple)) {
+            int currentValue = twoDimEpsilon.get(eventTuple);
+            twoDimEpsilon.remove(eventTuple);
+            twoDimEpsilon.put(eventTuple, value + currentValue);
+        } else {
+            twoDimEpsilon.put(eventTuple, value);
+        }
     }
 
     /**

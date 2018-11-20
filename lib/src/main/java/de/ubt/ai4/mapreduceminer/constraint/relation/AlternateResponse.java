@@ -16,10 +16,15 @@ public class AlternateResponse extends DoubleEventConstraint implements Eventbas
         super(eventA, eventB, type);
     }
 
+    public AlternateResponse() {}
 
 
     @Override
     public boolean logic(AuxilaryDatabase ad) {
+
+        if(ad.currentJ < ad.currentI+1)
+            return false;
+
         Event filteredSPEventB = super.getEventB();
         Event filteredMPEventB = super.getEventB();
         Event filteredEventA = super.getEventA();
@@ -57,6 +62,35 @@ public class AlternateResponse extends DoubleEventConstraint implements Eventbas
 
     @Override
     public ResultElement getResult(Database db, double sigma, int logSize) {
-        return null;
+        double eta = db.getEta().get(getEventA());
+        double support = sigma / eta;
+
+        int currentEpsilon = db.getEpsilon().get(getEventA());
+        double confidence = support * (currentEpsilon / (double) logSize);
+
+        return new ResultElement(this.getClass().toString(), getEventA(), getEventB(), support, confidence, this.getType());    
+    }
+
+    @Override
+    public int hashCode() {
+        return 3^this.getEventA().hashCode() * 5^this.getEventB().hashCode() * 7^this.getType().hashCode() ;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+       
+        AlternateResponse other = (AlternateResponse) o;
+
+        if(other.getEventA().equals(this.getEventA())) {
+            if(other.getEventB().equals(this.getEventB())) {
+                if(other.getType().equals(this.getType()))
+                {
+                    return true;
+                }
+            }
+           
+        }
+
+        return false;
     }
 }

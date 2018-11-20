@@ -1,8 +1,8 @@
 package de.ubt.ai4.mapreduceminer.util;
 
 public class Tuple<Event> {
-    public final Event x;
-    public final Event y;
+    public  Event x;
+    public  Event y;
 
 
     public Tuple(Event x, Event y) {
@@ -10,14 +10,22 @@ public class Tuple<Event> {
         this.y = y;
     }
 
+    public Tuple() {}
 
     @Override
     public boolean equals(Object o) {
         Tuple<Event> other = (Tuple<Event>) o;
-
+/*
         if(other.x.equals(this.x) && other.y.equals(this.y))
             return true;
+*/
 
+        if(
+            (other.x.equals(this.x) && other.y.equals(this.y))
+            ||
+            (other.x.equals(this.y) && other.y.equals(this.x))
+            )
+        return true;
         return false;
     }
 

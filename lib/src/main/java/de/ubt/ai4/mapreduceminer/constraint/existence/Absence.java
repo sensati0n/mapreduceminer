@@ -22,14 +22,9 @@ public class Absence extends IntEventConstraint implements Tracebased {
     }
 
     @Override
-    public List<Tracebased> logic(AuxilaryDatabase ad, int position, int size) {
-        List<Tracebased> result = new ArrayList<>();
-
-        for(int i = ad.getOccurences(getEvent()); i < 10; i++)
-        {
-            result.add(new Absence(getEvent(), i, getType()));
-        }
-        return result;
+    public boolean logic(AuxilaryDatabase ad, int position, int size) {
+ 
+     return true;
     }
 
     @Override

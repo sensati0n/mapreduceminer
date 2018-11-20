@@ -15,30 +15,51 @@ public class ChainResponse extends DoubleEventConstraint implements Eventbased {
         super(eventA, eventB, type);
     }
 
+    public ChainResponse() {}
+
     @Override
     public boolean logic(AuxilaryDatabase ad) {
-        Event filteredEventB = super.getEventB();
-        switch(super.getType())
-        {
-            case ACTIVATION:
-                filteredEventB = filteredEventB.filter(super.getEventIdentifier());
-                break;
-            case TARGET:
-                filteredEventB = filteredEventB.filter(super.getEventIdentifier(), super.getAdditionalAttribute());
-                break;
-            case CORRELATION:
-        }
-
-        if (!ad.tasksResponse.contains(filteredEventB)) {
-            ad.tasksResponse.add(filteredEventB);
+       
+        if(ad.currentJ == ad.currentI+1) {
             return true;
         }
-        else
-            return false;
+        return false;
     }
 
     @Override
     public ResultElement getResult(Database db, double sigma, int logSize) {
-        return null;
+
+        System.out.println("CR: " + this.getEventA() + ","+this.getEventB()+ ":" + sigma);
+
+        double eta = db.getEta().get(getEventA());
+        double support = sigma / eta;
+
+        int currentEpsilon = db.getEpsilon().get(getEventA());
+        double confidence = support * (currentEpsilon / (double) logSize);
+        
+        return new ResultElement(this.getClass().toString(), getEventA(), getEventB(), support, confidence, this.getType());
+    }
+
+    @Override
+    public int hashCode() {
+        return 3^this.getEventA().hashCode() * 5^this.getEventB().hashCode() * 7^this.getType().hashCode() ;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+       
+        ChainResponse other = (ChainResponse) o;
+
+        if(other.getEventA().equals(this.getEventA())) {
+            if(other.getEventB().equals(this.getEventB())) {
+                if(other.getType().equals(this.getType()))
+                {
+                    return true;
+                }
+            }
+           
+        }
+
+        return false;
     }
 }
