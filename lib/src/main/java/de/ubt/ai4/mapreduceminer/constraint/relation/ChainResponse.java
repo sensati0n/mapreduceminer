@@ -6,7 +6,7 @@ import de.ubt.ai4.mapreduceminer.constraint.DoubleEventConstraint;
 import de.ubt.ai4.mapreduceminer.constraint.Eventbased;
 import de.ubt.ai4.mapreduceminer.model.Event;
 import de.ubt.ai4.mapreduceminer.result.ResultElement;
-import de.ubt.ai4.mapreduceminer.util.AuxilaryDatabase;
+import de.ubt.ai4.mapreduceminer.util.AuxiliaryDatabase;
 import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 
 public class ChainResponse extends DoubleEventConstraint implements Eventbased {
@@ -18,7 +18,7 @@ public class ChainResponse extends DoubleEventConstraint implements Eventbased {
     public ChainResponse() {}
 
     @Override
-    public boolean logic(AuxilaryDatabase ad) {
+    public boolean logic(AuxiliaryDatabase ad) {
        
         if(ad.currentJ == ad.currentI+1) {
             return true;

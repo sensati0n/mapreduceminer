@@ -7,7 +7,7 @@ import de.ubt.ai4.mapreduceminer.constraint.Eventbased;
 import de.ubt.ai4.mapreduceminer.constraint.HistoryBased;
 import de.ubt.ai4.mapreduceminer.model.Event;
 import de.ubt.ai4.mapreduceminer.result.ResultElement;
-import de.ubt.ai4.mapreduceminer.util.AuxilaryDatabase;
+import de.ubt.ai4.mapreduceminer.util.AuxiliaryDatabase;
 import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 
 public class Precedence extends DoubleEventConstraint implements Eventbased, HistoryBased {
@@ -19,7 +19,7 @@ public class Precedence extends DoubleEventConstraint implements Eventbased, His
     public Precedence() {}
 
     @Override
-    public boolean logic(AuxilaryDatabase ad) {
+    public boolean logic(AuxiliaryDatabase ad) {
 
 
 
@@ -31,12 +31,12 @@ public class Precedence extends DoubleEventConstraint implements Eventbased, His
         Event filteredEventA = super.getEventA();
 
         switch (super.getType()) {
-            case ACTIVATION: //TARGET
+            case TARGET: 
             filteredEventB = filteredEventB.filter(super.getEventIdentifier(), super.getAdditionalAttribute());
             filteredEventA = filteredEventA.filter(super.getEventIdentifier(), super.getAdditionalAttribute());
 
                 break;
-            case TARGET:
+            case ACTIVATION:
             filteredEventB = filteredEventB.filter(super.getEventIdentifier());
             filteredEventA = filteredEventA.filter(super.getEventIdentifier());
 

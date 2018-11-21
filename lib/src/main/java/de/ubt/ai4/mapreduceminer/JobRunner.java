@@ -41,7 +41,7 @@ public class JobRunner {
         ConstraintImpl.setEventIdentifier(configuration.getEventIdentifier());
         ConstraintImpl.setAdditionalAttribute(configuration.getAdditionalAttribute());
 
-        AuxilaryDatabase.logInfo = new LogInfo(eventLog, configuration);
+         AuxiliaryDatabase.logInfo = new LogInfo(eventLog, configuration);
 
     }
 
@@ -49,7 +49,7 @@ public class JobRunner {
         return configuration;
     }
 
-    private void calcS(Database db) {
+    private void mrii(Database db) {
 
         MiningResult result = new MiningResult();
 
@@ -77,24 +77,91 @@ public class JobRunner {
 
 
         // 'MR-II': calculate Support and Confidence
-        calcS(db);
+        mrii(db);
 
     }
 
     private Constraint instantiate(Class<Constraint> c, Event eventA, Event eventB, int n, ConstraintType type) {
+        System.out.println("instanciate:" + type + c.getSimpleName() + eventA + ", " + eventB);
 
+
+       
         Constraint impl = null;
         try {
             impl = c.getConstructor().newInstance();
 
             if (impl instanceof DoubleEventConstraint) {
+
+                if(impl instanceof HistoryBased)
+                {
+                 switch(type)
+                 {
+                    case ACTIVATION:
+                    eventA = eventA.filter(this.getConfiguration().getEventIdentifier());
+                    eventB = eventB.filter(this.getConfiguration().getEventIdentifier(), this.getConfiguration().getAdditionalAttribute());
+                break;
+
+
+                case TARGET:
+                    eventA = eventA.filter(this.getConfiguration().getEventIdentifier(), this.getConfiguration().getAdditionalAttribute());
+                    eventB = eventB.filter(this.getConfiguration().getEventIdentifier());
+                break;
+                  
+                 }
+                }
+                     else {
+     
+                         switch(type)
+                         {
+                            case ACTIVATION:
+                            eventA = eventA.filter(this.getConfiguration().getEventIdentifier(), this.getConfiguration().getAdditionalAttribute());
+                            eventB = eventB.filter(this.getConfiguration().getEventIdentifier());
+                        break;
+        
+        
+                        case TARGET:
+                            eventA = eventA.filter(this.getConfiguration().getEventIdentifier());
+                            eventB = eventB.filter(this.getConfiguration().getEventIdentifier(), this.getConfiguration().getAdditionalAttribute());
+                        break;
+                  
+                 }
+             }
+
                 ((DoubleEventConstraint) impl).setEventA(eventA);
                 ((DoubleEventConstraint) impl).setEventB(eventB);
                 ((DoubleEventConstraint) impl).setType(type);
             } else if (impl instanceof SingleEventConstraint) {
+                switch(type)
+                {
+                    case ACTIVATION:
+                                 eventA = eventA.filter(this.getConfiguration().getEventIdentifier(), this.getConfiguration().getAdditionalAttribute());
+                                 eventB = eventB.filter(this.getConfiguration().getEventIdentifier());
+                             break;
+             
+             
+                             case TARGET:
+                                 eventA = eventA.filter(this.getConfiguration().getEventIdentifier());
+                                 eventB = eventB.filter(this.getConfiguration().getEventIdentifier(), this.getConfiguration().getAdditionalAttribute());
+                             break;
+                }
+        
                 ((SingleEventConstraint) impl).setEvent(eventA);
                 ((SingleEventConstraint) impl).setType(type);
             } else if (impl instanceof IntEventConstraint) {
+                switch(type)
+                {
+                    case ACTIVATION:
+                                 eventA = eventA.filter(this.getConfiguration().getEventIdentifier(), this.getConfiguration().getAdditionalAttribute());
+                                 eventB = eventB.filter(this.getConfiguration().getEventIdentifier());
+                             break;
+             
+             
+                             case TARGET:
+                                 eventA = eventA.filter(this.getConfiguration().getEventIdentifier());
+                                 eventB = eventB.filter(this.getConfiguration().getEventIdentifier(), this.getConfiguration().getAdditionalAttribute());
+                             break;
+                }
+        
                 ((IntEventConstraint) impl).setEvent(eventA);
                 ((IntEventConstraint) impl).setN(n);
                 ((IntEventConstraint) impl).setType(type);
@@ -121,13 +188,38 @@ public class JobRunner {
 
         Database database = new Database(configuration);
 
-        AuxilaryDatabase activationAD = new AuxilaryDatabase();
-        AuxilaryDatabase targetAD = new AuxilaryDatabase();
+        AuxiliaryDatabase activationAD = new AuxiliaryDatabase();
+        AuxiliaryDatabase targetAD = new AuxiliaryDatabase();
+        try {
+            activationAD = (AuxiliaryDatabase) getConfiguration().getAuxiliaryDatabaseClass().getConstructor().newInstance();
+            targetAD =  (AuxiliaryDatabase) getConfiguration().getAuxiliaryDatabaseClass().getConstructor().newInstance();
+        } catch (InstantiationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
 
         activationAD.first = events.get(0);
         activationAD.last = events.get(events.size() - 1);
 
         for (int i = 0; i < trace.getEvents().size(); i++) {
+            System.out.println("i:"+i);
+
             activationAD.currentI = i;
             targetAD.currentI = i;
 
@@ -150,6 +242,7 @@ public class JobRunner {
             }
 
             for (int j = 0; j < trace.getEvents().size(); j++) {
+                System.out.println("j:"+j);
                 activationAD.currentJ = j;
                 targetAD.currentJ = j;
 
@@ -162,18 +255,19 @@ public class JobRunner {
                     }
                 }
 
+              
                 for (Class<Constraint> c : getConfiguration().getConstraints()) {
-                    Constraint impl = instantiate(c, events.get(i).filter(eventIdentifier, additionalAttribute), events.get(j).filter(eventIdentifier), -1, ConstraintType.ACTIVATION);
-                    Constraint implTarget = instantiate(c, events.get(i).filter(eventIdentifier), events.get(j).filter(eventIdentifier, additionalAttribute), -1,  ConstraintType.TARGET);
+                    Constraint impl = instantiate(c, events.get(i), events.get(j), -1, ConstraintType.ACTIVATION);
+                    Constraint implTarget = instantiate(c, events.get(i), events.get(j), -1,  ConstraintType.TARGET);
 
                     if (impl instanceof Eventbased) {
                         Eventbased eventBasedImpl = (Eventbased) impl;
                         Eventbased eventBasedImplTarget = (Eventbased) implTarget;
-                     if (eventBasedImpl.logic(activationAD))
+                /*     if (eventBasedImpl.logic(activationAD))
                             database.addSigma(eventBasedImpl, 1);
                         else
                             pti.addPivot(impl.getClass(), i, j, "activation");
- 
+ */
                        if (eventBasedImplTarget.logic(targetAD))
                            database.addSigma(implTarget, 1);
                       else
@@ -189,7 +283,7 @@ public class JobRunner {
 
         for(Map.Entry<Event, Integer> entry : activationAD.eventCounter.entrySet()){
             for (Class<Constraint> c : getConfiguration().getConstraints()) {
-                Constraint impl = instantiate(c, entry.getKey(), null, entry.getValue(), ConstraintType.ACTIVATION);
+                Constraint impl = instantiate(c, entry.getKey(), new Event(), entry.getValue(), ConstraintType.ACTIVATION);
                 if (impl instanceof Tracebased) {
                     Tracebased traceBasedImpl = (Tracebased) impl;
                     if(traceBasedImpl.logic(activationAD, -1, events.size()))

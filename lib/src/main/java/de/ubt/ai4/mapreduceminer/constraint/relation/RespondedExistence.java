@@ -5,7 +5,7 @@ import de.ubt.ai4.mapreduceminer.constraint.DoubleEventConstraint;
 import de.ubt.ai4.mapreduceminer.constraint.Eventbased;
 import de.ubt.ai4.mapreduceminer.model.Event;
 import de.ubt.ai4.mapreduceminer.result.ResultElement;
-import de.ubt.ai4.mapreduceminer.util.AuxilaryDatabase;
+import de.ubt.ai4.mapreduceminer.util.AuxiliaryDatabase;
 import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 
 public class RespondedExistence extends DoubleEventConstraint implements Eventbased {
@@ -17,7 +17,7 @@ public class RespondedExistence extends DoubleEventConstraint implements Eventba
     public RespondedExistence() {}
 
     @Override
-    public boolean logic(AuxilaryDatabase ad) {
+    public boolean logic(AuxiliaryDatabase ad) {
         
         Event filteredEventB = super.getEventB();
         switch (super.getType()) {

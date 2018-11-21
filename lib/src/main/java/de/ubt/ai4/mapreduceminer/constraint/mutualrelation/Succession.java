@@ -15,7 +15,7 @@ import de.ubt.ai4.mapreduceminer.constraint.relation.Response;
 import de.ubt.ai4.mapreduceminer.model.Attribute;
 import de.ubt.ai4.mapreduceminer.model.Event;
 import de.ubt.ai4.mapreduceminer.result.ResultElement;
-import de.ubt.ai4.mapreduceminer.util.AuxilaryDatabase;
+import de.ubt.ai4.mapreduceminer.util.AuxiliaryDatabase;
 import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 import de.ubt.ai4.mapreduceminer.util.Tuple;
 
@@ -28,7 +28,7 @@ public class Succession extends DoubleEventConstraint implements Eventbased {
     public Succession() {}
 
     @Override
-    public boolean logic(AuxilaryDatabase ad) {
+    public boolean logic(AuxiliaryDatabase ad) {
        
         //RESPONSE:
 

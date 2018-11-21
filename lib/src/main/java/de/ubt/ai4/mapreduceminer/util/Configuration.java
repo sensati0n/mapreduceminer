@@ -31,6 +31,18 @@ public class Configuration {
     private List<Class> constraints = new ArrayList<>();
     private List<ConstraintType> constraintTypes = new ArrayList<>();
 
+    private Class auxiliaryDatabaseClass;
+
+    public Class getAuxiliaryDatabaseClass() {
+        return this.auxiliaryDatabaseClass;
+    }
+
+    public Configuration setAuxiliaryDatabaseClass(Class auxiliaryDatabaseClass) {
+        this.auxiliaryDatabaseClass = auxiliaryDatabaseClass;
+        return this;
+    }
+
+
     public Configuration() {
         this.allConstraints = new ArrayList<>();
         this.allConstraints.addAll(Arrays.asList(
@@ -65,6 +77,8 @@ public class Configuration {
                 ConstraintType.TARGET,
                 ConstraintType.CORRELATION
         ));
+
+        this.auxiliaryDatabaseClass = AuxiliaryDatabase.class;
 
     }
 

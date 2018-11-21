@@ -5,7 +5,7 @@ import de.ubt.ai4.mapreduceminer.constraint.SingleEventConstraint;
 import de.ubt.ai4.mapreduceminer.constraint.Tracebased;
 import de.ubt.ai4.mapreduceminer.model.Event;
 import de.ubt.ai4.mapreduceminer.result.ResultElement;
-import de.ubt.ai4.mapreduceminer.util.AuxilaryDatabase;
+import de.ubt.ai4.mapreduceminer.util.AuxiliaryDatabase;
 import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class Participation extends SingleEventConstraint implements Tracebased {
     }
 
     @Override
-    public boolean logic(AuxilaryDatabase ad, int position, int size) {
+    public boolean logic(AuxiliaryDatabase ad, int position, int size) {
         
         if(ad.eventCounter.get(super.getEvent())>=(1))
             return true;

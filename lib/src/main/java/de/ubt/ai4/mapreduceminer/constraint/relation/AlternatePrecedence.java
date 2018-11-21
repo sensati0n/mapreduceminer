@@ -4,13 +4,14 @@ import de.ubt.ai4.mapreduceminer.Database;
 import de.ubt.ai4.mapreduceminer.constraint.ConstraintImpl;
 import de.ubt.ai4.mapreduceminer.constraint.DoubleEventConstraint;
 import de.ubt.ai4.mapreduceminer.constraint.Eventbased;
+import de.ubt.ai4.mapreduceminer.constraint.HistoryBased;
 import de.ubt.ai4.mapreduceminer.model.Event;
 import de.ubt.ai4.mapreduceminer.result.ResultElement;
-import de.ubt.ai4.mapreduceminer.util.AuxilaryDatabase;
+import de.ubt.ai4.mapreduceminer.util.AuxiliaryDatabase;
 import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 //import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-public class AlternatePrecedence extends DoubleEventConstraint implements Eventbased {
+public class AlternatePrecedence extends DoubleEventConstraint implements Eventbased, HistoryBased {
 
     public AlternatePrecedence(Event eventA, Event eventB, ConstraintType type) {
         super(eventA, eventB, type);
@@ -19,7 +20,7 @@ public class AlternatePrecedence extends DoubleEventConstraint implements Eventb
     public AlternatePrecedence() {}
 
     @Override
-    public boolean logic(AuxilaryDatabase ad) {
+    public boolean logic(AuxiliaryDatabase ad) {
 
         if(ad.currentJ < ad.currentI+1)
             return false;
@@ -30,12 +31,12 @@ public class AlternatePrecedence extends DoubleEventConstraint implements Eventb
         Event filteredSPEventA = super.getEventA();
         switch(super.getType())
         {
-            case ACTIVATION: // ACTIVATION IS HERE TARGET
+            case TARGET: // ACTIVATION IS HERE TARGET
                 filteredMPEventB = filteredMPEventB.filter(super.getEventIdentifier()); //MP IS HERE SP!!
                 filteredSPEventB = filteredSPEventB.filter(super.getEventIdentifier(),  super.getAdditionalAttribute());
                 filteredSPEventA = filteredEventA.filter(super.getEventIdentifier(),  super.getAdditionalAttribute());
                 break;
-            case TARGET:  //ACTIVTION
+            case ACTIVATION:  //ACTIVTION
                 filteredMPEventB = filteredMPEventB.filter(super.getEventIdentifier(),  super.getAdditionalAttribute());
                 filteredSPEventB = filteredSPEventB.filter(super.getEventIdentifier());
                 filteredSPEventA = filteredEventA.filter(super.getEventIdentifier());

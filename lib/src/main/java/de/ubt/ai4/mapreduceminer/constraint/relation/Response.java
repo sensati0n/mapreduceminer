@@ -7,7 +7,7 @@ import de.ubt.ai4.mapreduceminer.constraint.Eventbased;
 import de.ubt.ai4.mapreduceminer.result.ResultElement;
 import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 import de.ubt.ai4.mapreduceminer.model.Event;
-import de.ubt.ai4.mapreduceminer.util.AuxilaryDatabase;
+import de.ubt.ai4.mapreduceminer.util.AuxiliaryDatabase;
 
 import javax.xml.crypto.Data;
 
@@ -22,7 +22,7 @@ public class Response extends DoubleEventConstraint implements Eventbased {
     }
 
     @Override
-    public boolean logic(AuxilaryDatabase ad) {
+    public boolean logic(AuxiliaryDatabase ad) {
 
         if(ad.currentJ < ad.currentI+1)
             return false;

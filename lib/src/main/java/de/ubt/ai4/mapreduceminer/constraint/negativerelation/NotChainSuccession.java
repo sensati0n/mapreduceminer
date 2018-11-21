@@ -16,7 +16,7 @@ import de.ubt.ai4.mapreduceminer.constraint.relation.Response;
 import de.ubt.ai4.mapreduceminer.model.Attribute;
 import de.ubt.ai4.mapreduceminer.model.Event;
 import de.ubt.ai4.mapreduceminer.result.ResultElement;
-import de.ubt.ai4.mapreduceminer.util.AuxilaryDatabase;
+import de.ubt.ai4.mapreduceminer.util.AuxiliaryDatabase;
 import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 import de.ubt.ai4.mapreduceminer.util.Tuple;
 
@@ -29,7 +29,7 @@ public class NotChainSuccession extends DoubleEventConstraint implements Eventba
     public NotChainSuccession() {}
 
     @Override
-    public boolean logic(AuxilaryDatabase ad) {
+    public boolean logic(AuxiliaryDatabase ad) {
        
         //CHAIN RESPONSE
         if(ad.currentJ == ad.currentI+1) {

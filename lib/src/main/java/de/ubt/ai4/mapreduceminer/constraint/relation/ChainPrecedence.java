@@ -4,12 +4,13 @@ import de.ubt.ai4.mapreduceminer.Database;
 import de.ubt.ai4.mapreduceminer.constraint.ConstraintImpl;
 import de.ubt.ai4.mapreduceminer.constraint.DoubleEventConstraint;
 import de.ubt.ai4.mapreduceminer.constraint.Eventbased;
+import de.ubt.ai4.mapreduceminer.constraint.HistoryBased;
 import de.ubt.ai4.mapreduceminer.model.Event;
 import de.ubt.ai4.mapreduceminer.result.ResultElement;
-import de.ubt.ai4.mapreduceminer.util.AuxilaryDatabase;
+import de.ubt.ai4.mapreduceminer.util.AuxiliaryDatabase;
 import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 
-public class ChainPrecedence extends DoubleEventConstraint implements Eventbased {
+public class ChainPrecedence extends DoubleEventConstraint implements Eventbased, HistoryBased {
 
     public ChainPrecedence(Event eventA, Event eventB, ConstraintType type) {
         super(eventA, eventB, type);
@@ -18,7 +19,7 @@ public class ChainPrecedence extends DoubleEventConstraint implements Eventbased
     public ChainPrecedence() { }
     
     @Override
-    public boolean logic(AuxilaryDatabase ad) {
+    public boolean logic(AuxiliaryDatabase ad) {
         if(ad.currentJ == ad.currentI+1) 
             return true;
         
