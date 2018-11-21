@@ -3,6 +3,7 @@ package de.ubt.ai4.mapreduceminer.constraint.relation;
 import de.ubt.ai4.mapreduceminer.Database;
 import de.ubt.ai4.mapreduceminer.constraint.DoubleEventConstraint;
 import de.ubt.ai4.mapreduceminer.constraint.Eventbased;
+import de.ubt.ai4.mapreduceminer.constraint.FutureConstraining;
 import de.ubt.ai4.mapreduceminer.result.ResultElement;
 import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 import de.ubt.ai4.mapreduceminer.constraint.ConstraintImpl;
@@ -10,7 +11,7 @@ import de.ubt.ai4.mapreduceminer.model.Event;
 import de.ubt.ai4.mapreduceminer.util.AuxiliaryDatabase;
 
 
-public class AlternateResponse extends DoubleEventConstraint implements Eventbased {
+public class AlternateResponse extends DoubleEventConstraint implements Eventbased,FutureConstraining {
 
     public AlternateResponse(Event eventA, Event eventB, ConstraintType type) {
         super(eventA, eventB, type);

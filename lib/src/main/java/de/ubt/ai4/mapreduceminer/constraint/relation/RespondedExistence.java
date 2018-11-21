@@ -3,12 +3,13 @@ package de.ubt.ai4.mapreduceminer.constraint.relation;
 import de.ubt.ai4.mapreduceminer.Database;
 import de.ubt.ai4.mapreduceminer.constraint.DoubleEventConstraint;
 import de.ubt.ai4.mapreduceminer.constraint.Eventbased;
+import de.ubt.ai4.mapreduceminer.constraint.FutureConstraining;
 import de.ubt.ai4.mapreduceminer.model.Event;
 import de.ubt.ai4.mapreduceminer.result.ResultElement;
 import de.ubt.ai4.mapreduceminer.util.AuxiliaryDatabase;
 import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 
-public class RespondedExistence extends DoubleEventConstraint implements Eventbased {
+public class RespondedExistence extends DoubleEventConstraint implements Eventbased, FutureConstraining {
 
     public RespondedExistence(Event eventA, Event eventB, ConstraintType type) {
         super(eventA, eventB, type);

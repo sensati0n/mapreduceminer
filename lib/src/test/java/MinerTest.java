@@ -244,7 +244,7 @@ public void testCustomConstraint() {
            //EventLog eventLog = XesLoader.loadXes("C:\\Users\\bt304947\\Documents\\sampleXes.xes");
 
            EventLog eventLog = new EventLog();
-/*
+
            List<Trace> traces = new ArrayList<>();
            Trace t0 = new Trace();
            Event e00 = new Event();
@@ -314,72 +314,6 @@ public void testCustomConstraint() {
            t2.addEvent(e22);
          
            traces.add(t2);
-*/
-
-            List<Trace> traces = new ArrayList<>();
-
-            Trace t1 = new Trace();
-            Event e10 = new Event();
-            e10.addAttribute("task", "impl");
-            e10.addAttribute("resource", "x");
-            Event e11 = new Event();
-            e11.addAttribute("task", "test");
-            e11.addAttribute("resource", "x");
-            Event e12 = new Event();
-            e12.addAttribute("task", "test");
-            e12.addAttribute("resource", "y");
-            Event e13 = new Event();
-            e13.addAttribute("task", "final-test");
-            e13.addAttribute("resource", "STE");
-            Event e14 = new Event();
-            e14.addAttribute("task", "deliver");
-            e14.addAttribute("resource", "john");
-            t1.addEvent(e10);
-            t1.addEvent(e11);
-            t1.addEvent(e12);
-            t1.addEvent(e13);
-            t1.addEvent(e14);
-
-          //  traces.add(t1);
-
-            Trace t0 = new Trace();
-            Event e00 = new Event();
-            e00.addAttribute("task", "impl");
-            e00.addAttribute("resource", "x");
-            Event e01 = new Event();
-            e01.addAttribute("task", "test");
-            e01.addAttribute("resource", "z");
-            Event e02 = new Event();
-            e02.addAttribute("task", "test");
-            e02.addAttribute("resource", "y");
-            Event e03 = new Event();
-            e03.addAttribute("task", "test");
-            e03.addAttribute("resource", "x");
-            Event e04 = new Event();
-            e04.addAttribute("task", "test");
-            e04.addAttribute("resource", "z");
-            Event e05 = new Event();
-            e05.addAttribute("task", "test");
-            e05.addAttribute("resource", "y");
-            Event e06 = new Event();
-            e06.addAttribute("task", "test");
-            e06.addAttribute("resource", "x");
-            Event e07 = new Event();
-            e07.addAttribute("task", "final-test");
-            e07.addAttribute("resource", "STE");
-            Event e08 = new Event();
-            e08.addAttribute("task", "deliver");
-            e08.addAttribute("resource", "job");
-            t0.addEvent(e00);
-            t0.addEvent(e01);
-            t0.addEvent(e02);
-            t0.addEvent(e03);
-            t0.addEvent(e04);
-            t0.addEvent(e05);
-            t0.addEvent(e06);
-            t0.addEvent(e07);
-            t0.addEvent(e08);
-            traces.add(t0);
 
          
 
@@ -390,7 +324,7 @@ public void testCustomConstraint() {
         configuration
                 .setEventIdentifier("task")
                 .setAdditionalAttribute("resource")
-                .addConstraint(WithinFiveSteps.class)
+                .allConstraints()
                 .setAuxiliaryDatabaseClass(CustomAuxiliaryDatabase.class)
                 .allConstraintTypes();
 

@@ -263,11 +263,11 @@ public class JobRunner {
                     if (impl instanceof Eventbased) {
                         Eventbased eventBasedImpl = (Eventbased) impl;
                         Eventbased eventBasedImplTarget = (Eventbased) implTarget;
-                /*     if (eventBasedImpl.logic(activationAD))
+                     if (eventBasedImpl.logic(activationAD))
                             database.addSigma(eventBasedImpl, 1);
                         else
                             pti.addPivot(impl.getClass(), i, j, "activation");
- */
+ 
                        if (eventBasedImplTarget.logic(targetAD))
                            database.addSigma(implTarget, 1);
                       else
