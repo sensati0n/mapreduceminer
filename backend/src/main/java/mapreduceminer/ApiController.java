@@ -3,6 +3,7 @@ package mapreduceminer;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,26 +15,20 @@ import mapreduceminer.service.MiningServiceResult;
 @RestController
 public class ApiController {
 
+    @GetMapping(path="/ok")
+    public String getMethod() {
+        return "ok";
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public String getAllWeatherStations() {
+        return "weatherService.getAllStations()";
+    }
+
     @RequestMapping(path = "miningJob", method = RequestMethod.POST, consumes = MediaType.APPLICATION_XML_VALUE) 
     public ResponseEntity<MiningServiceResult> miningJob(@RequestBody EventLog webEventLog) {
 
-    de.ubt.ai4.mapreduceminer.model.EventLog minerEventLog = new de.ubt.ai4.mapreduceminer.model.EventLog();
-    
-    for(Trace webTrace : webEventLog.getTrace()) {
-        de.ubt.ai4.mapreduceminer.model.Trace minerTrace = new de.ubt.ai4.mapreduceminer.model.Trace();
-        for(Event webEvent : webTrace.getEvent()) {
-            de.ubt.ai4.mapreduceminer.model.Event minerEvent = new de.ubt.ai4.mapreduceminer.model.Event();
-            
-            for(Attribute webAttribute : webEvent.getString()) {
-                minerEvent.addAttribute(webAttribute.getKey(), webAttribute.getValue());
-            }
-            minerTrace.addEvent(minerEvent);
-        }
-        minerEventLog.addTrace(minerTrace);
-
-    }
-
-    MiningServiceResult result = MiningService.miningJob(minerEventLog);
+    MiningServiceResult result = MiningService.miningJob(webEventLog);
 
     return ResponseEntity.ok(result);    
 }
