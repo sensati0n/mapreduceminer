@@ -115,7 +115,6 @@ public class Configuration {
     }
 
     public Configuration addConstraint(Class constraint) {
-        System.out.println(constraint.getSimpleName());
         if(constraint.getSimpleName().equals("Succession"))
         {
             this.constraints.add(Response.class);

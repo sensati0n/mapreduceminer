@@ -55,8 +55,6 @@ public class Response extends DoubleEventConstraint implements Eventbased, Futur
         int currentEpsilon = db.getEpsilon().get(getEventA());
         double confidence = support * (currentEpsilon / (double) logSize);
 
-        //System.out.println("Support(" + constraint.getName() + currentEntry.getKey() + ") = \t\t" + support);
-        //System.out.println("Confidence(" + currentEntry.getKey() + ") = \t" + confidence);
         return new ResultElement(this.getClass().toString(), getEventA(), getEventB(), support, confidence, this.getType());
 
     }

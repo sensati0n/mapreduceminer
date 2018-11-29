@@ -17,7 +17,6 @@ public class Existence extends IntEventConstraint implements Tracebased {
     super();
     }
 
-
     public Existence(Event event, ConstraintType type){
         super(event, type);
     }
@@ -25,7 +24,6 @@ public class Existence extends IntEventConstraint implements Tracebased {
     public Existence(Event event, Integer n, ConstraintType type){
         super(event, n, type);
     }
-
 
     @Override
     public boolean logic(AuxiliaryDatabase ad, int position, int size) {

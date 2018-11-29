@@ -22,8 +22,6 @@ import junit.framework.Assert;
 import mapreduceminer.ApiController;
 import mapreduceminer.Application;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 @SpringBootTest
 @WebMvcTest(Application.class)
 public class IntegrationTest {

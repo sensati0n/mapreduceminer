@@ -41,8 +41,6 @@ public class ChainSuccession extends DoubleEventConstraint implements Eventbased
 
     @Override
     public ResultElement getResult(Database db, double sigma, int logSize) {
-        System.out.println("Constraint: " + this.getEventA() + ", " + this.getEventB());
-        System.out.println("sigmaInit: " + sigma);
 
         Event chainPrecedenceEventA = new Event();
         Event chainPrecedenceEventB = new Event();
@@ -81,11 +79,9 @@ public class ChainSuccession extends DoubleEventConstraint implements Eventbased
         int sigmaPrecedence = 0;
         try {
             sigmaPrecedence+=db.getSigmaEntry(ChainPrecedence.class).get(p);
-            System.out.println("sigmaPrecedence: " + db.getSigmaEntry(ChainPrecedence.class).get(p));
 
         }
         catch(NullPointerException npe) {
-            System.out.println("RTFM!");
         }
 
         sigma += sigmaPrecedence;
@@ -97,8 +93,6 @@ public class ChainSuccession extends DoubleEventConstraint implements Eventbased
 
         } catch(NullPointerException npe) {}
 
-        System.out.println("etaA: " + etaA);
-        System.out.println("etaB: " + etaB);
         double support = sigma/(etaA + etaB);
 
         double confidence = 0;
@@ -117,12 +111,7 @@ public class ChainSuccession extends DoubleEventConstraint implements Eventbased
     
             }
             confidence = support * (currentEpsilon / (double) logSize);
-
            
-    
-
-        //System.out.println("Support(" + constraint.getName() + currentEntry.getKey() + ") = \t\t" + support);
-        //System.out.println("Confidence(" + currentEntry.getKey() + ") = \t" + confidence);
         return new ResultElement(this.getClass().toString(), getEventA(), getEventB(), support, confidence, this.getType());
     }
 

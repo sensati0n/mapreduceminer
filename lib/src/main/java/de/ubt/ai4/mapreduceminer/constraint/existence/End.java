@@ -30,8 +30,6 @@ public class End extends SingleEventConstraint implements Tracebased {
         return false;
     }
 
-    
-
     @Override
     public ResultElement getResult(Database db, double sigma, int logSize) {
         return new ResultElement(this.getClass().toString(), getEvent(), sigma/logSize, 0.0d, this.getType());

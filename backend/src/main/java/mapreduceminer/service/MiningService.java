@@ -15,12 +15,10 @@ public class MiningService {
         
         Configuration configuration = new Configuration();
         configuration
-                .setEventIdentifier("task")
-                .setAdditionalAttribute("resource")
+                .setEventIdentifier("concept:name")
+                .setAdditionalAttribute("org:group")
                 .allConstraints()
-                .addConstraint(WithinFiveSteps.class)
-                .setAuxiliaryDatabaseClass(CustomAuxiliaryDatabase.class)
-                .activationConstraints();
+                .allConstraintTypes();
    
 
         EventLog eventLog = convert(webEventLog);

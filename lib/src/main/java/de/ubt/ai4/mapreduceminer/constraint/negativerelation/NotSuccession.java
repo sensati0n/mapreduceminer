@@ -57,8 +57,7 @@ public class NotSuccession extends DoubleEventConstraint implements Eventbased {
 
     @Override
     public ResultElement getResult(Database db, double sigma, int logSize) {
-        System.out.println("Constraint: " + this.getEventA() + ", " + this.getEventB());
-        System.out.println("sigmaInit: " + sigma);
+    
 
         Event precedenceEventA = new Event();
         Event precedenceEventB = new Event();
@@ -82,13 +81,7 @@ public class NotSuccession extends DoubleEventConstraint implements Eventbased {
         break;
         }
 
-        
-        //ACTIVATION (succ(ax, b))
-        /**
-         * re(ax, b) + pr(a, bx)
-         * 
-         * 
-         */
+      
         Precedence p = new Precedence();
         p.setEventA(precedenceEventA);
         p.setEventB(precedenceEventB);
@@ -97,11 +90,9 @@ public class NotSuccession extends DoubleEventConstraint implements Eventbased {
         int sigmaPrecedence = 0;
         try {
             sigmaPrecedence+=db.getSigmaEntry(Precedence.class).get(p);
-            System.out.println("sigmaPrecedence: " + db.getSigmaEntry(Precedence.class).get(p));
 
         }
         catch(NullPointerException npe) {
-            System.out.println("RTFM!");
         }
 
         sigma += sigmaPrecedence;
@@ -113,14 +104,10 @@ public class NotSuccession extends DoubleEventConstraint implements Eventbased {
 
         } catch(NullPointerException npe) {}
 
-        System.out.println("etaA: " + etaA);
-        System.out.println("etaB: " + etaB);
+     
         double supportNew = sigma/(etaA + etaB);
         double support = 1-supportNew;
-        System.out.println("sigma: " + sigma);
-        
-        System.out.println("supportNew: " + sigma/(etaA + etaB));
-        System.out.println("support: " + support);
+      
 
         double confidence = 0;
 
@@ -139,11 +126,6 @@ public class NotSuccession extends DoubleEventConstraint implements Eventbased {
             }
             confidence = support * (currentEpsilon / (double) logSize);
 
-           
-    
-
-        //System.out.println("Support(" + constraint.getName() + currentEntry.getKey() + ") = \t\t" + support);
-        //System.out.println("Confidence(" + currentEntry.getKey() + ") = \t" + confidence);
         return new ResultElement(this.getClass().toString(), getEventA(), getEventB(), support, confidence, this.getType());
     }
 

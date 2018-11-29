@@ -37,7 +37,6 @@ public class Init extends SingleEventConstraint implements Tracebased {
         return new ResultElement(this.getClass().toString(), getEvent(), sigma/logSize, 0.0d, this.getType());
     }
 
-
     @Override
     public int hashCode() {
         return 3^this.getEvent().hashCode() * 5^this.getType().hashCode() ;

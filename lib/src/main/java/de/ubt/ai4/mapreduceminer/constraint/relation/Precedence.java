@@ -23,7 +23,6 @@ public class Precedence extends DoubleEventConstraint implements Eventbased, His
 
 
 
-        System.out.println("I am alive");
         if(ad.currentJ < ad.currentI+1)
             return false;
 
@@ -57,14 +56,12 @@ public class Precedence extends DoubleEventConstraint implements Eventbased, His
     public ResultElement getResult(Database db, double sigma, int logSize) {
         
         double eta = db.getEta().get(getEventB());
-        System.out.println(this.getEventA() + "," + this.getEventB() + "\t" + sigma);
         double support = sigma / eta;
 
         int currentEpsilon = db.getEpsilon().get(getEventB());
         double confidence = support * (currentEpsilon / (double) logSize);
 
-        //System.out.println("Support(" + constraint.getName() + currentEntry.getKey() + ") = \t\t" + support);
-        //System.out.println("Confidence(" + currentEntry.getKey() + ") = \t" + confidence);
+   
         return new ResultElement(this.getClass().toString(), getEventA(), getEventB(), support, confidence, this.getType());
     }
 

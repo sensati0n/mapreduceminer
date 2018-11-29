@@ -30,7 +30,6 @@ public class ChainResponse extends DoubleEventConstraint implements Eventbased, 
     @Override
     public ResultElement getResult(Database db, double sigma, int logSize) {
 
-        System.out.println("CR: " + this.getEventA() + ","+this.getEventB()+ ":" + sigma);
 
         double eta = db.getEta().get(getEventA());
         double support = sigma / eta;

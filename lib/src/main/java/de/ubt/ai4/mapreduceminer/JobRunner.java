@@ -53,9 +53,18 @@ public class JobRunner {
 
         MiningResult result = new MiningResult();
 
+
         for (Class constraint : configuration.getConstraints()) {
 
-            for (Map.Entry<Constraint, Integer> currentEntry : db.getSigmaEntry(constraint).entrySet()) {
+            System.out.println("canonicalName: " + constraint.getCanonicalName());
+
+            Map<Constraint, Integer> map = db.getSigmaEntry(constraint);
+
+            int counter = 0;
+            
+            for (Map.Entry<Constraint, Integer> currentEntry : map.entrySet()) {
+            //System.out.println("Sigma[" + currentConstraint + "]: " + counter++ + "/" + map.size());
+
                 result.addResult(
                         currentEntry.getKey().getResult(db, currentEntry.getValue(), eventLog.getTraces().size()));
             }
@@ -71,7 +80,7 @@ public class JobRunner {
 
 
                 for(Map.Entry<Tuple<Event>, Integer> curr : db.getTwoDimEpsilon().entrySet()) {
-                    System.out.println("funcEPSILON: \t" + curr.getKey() + ", " + curr.getValue());
+               //     System.out.println("funcEPSILON: \t" + curr.getKey() + ", " + curr.getValue());
 
                 }
 
@@ -82,7 +91,7 @@ public class JobRunner {
     }
 
     private Constraint instantiate(Class<Constraint> c, Event eventA, Event eventB, int n, ConstraintType type) {
-        System.out.println("instanciate:" + type + c.getSimpleName() + eventA + ", " + eventB);
+     //   System.out.println("instanciate:" + type + c.getSimpleName() + eventA + ", " + eventB);
 
 
        
@@ -218,7 +227,7 @@ public class JobRunner {
         activationAD.last = events.get(events.size() - 1);
 
         for (int i = 0; i < trace.getEvents().size(); i++) {
-            System.out.println("i:"+i);
+        //    System.out.println("i:"+i);
 
             activationAD.currentI = i;
             targetAD.currentI = i;
@@ -242,7 +251,7 @@ public class JobRunner {
             }
 
             for (int j = 0; j < trace.getEvents().size(); j++) {
-                System.out.println("j:"+j);
+         //       System.out.println("j:"+j);
                 activationAD.currentJ = j;
                 targetAD.currentJ = j;
 

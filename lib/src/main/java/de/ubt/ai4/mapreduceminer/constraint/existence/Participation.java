@@ -8,8 +8,6 @@ import de.ubt.ai4.mapreduceminer.result.ResultElement;
 import de.ubt.ai4.mapreduceminer.util.AuxiliaryDatabase;
 import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class Participation extends SingleEventConstraint implements Tracebased {
 
@@ -36,7 +34,6 @@ public class Participation extends SingleEventConstraint implements Tracebased {
         double support = sigma / logSize;
 
         int currentEpsilon = db.getEpsilon().get(getEvent());
-        System.out.println("eps(" + super.getEvent() + ")" + currentEpsilon);
         double confidence = support * (currentEpsilon / (double) logSize);
 
         return new ResultElement(this.getClass().toString(), getEvent(),  support, confidence, this.getType());

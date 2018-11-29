@@ -73,8 +73,6 @@ public class AlternateSuccession extends DoubleEventConstraint implements Eventb
 
     @Override
     public ResultElement getResult(Database db, double sigma, int logSize) {
-        System.out.println("Constraint: " + this.getEventA() + ", " + this.getEventB());
-        System.out.println("sigmaInit: " + sigma);
 
         Event alternatePrecedenceEventA = new Event();
         Event alternatePrecedenceEventB = new Event();
@@ -113,11 +111,9 @@ public class AlternateSuccession extends DoubleEventConstraint implements Eventb
         int sigmaPrecedence = 0;
         try {
             sigmaPrecedence+=db.getSigmaEntry(AlternatePrecedence.class).get(p);
-            System.out.println("sigmaPrecedence: " + db.getSigmaEntry(AlternatePrecedence.class).get(p));
 
         }
         catch(NullPointerException npe) {
-            System.out.println("RTFM!");
         }
 
         sigma += sigmaPrecedence;
@@ -129,8 +125,7 @@ public class AlternateSuccession extends DoubleEventConstraint implements Eventb
 
         } catch(NullPointerException npe) {}
 
-        System.out.println("etaA: " + etaA);
-        System.out.println("etaB: " + etaB);
+     
         double support = sigma/(etaA + etaB);
 
         double confidence = 0;
@@ -150,11 +145,7 @@ public class AlternateSuccession extends DoubleEventConstraint implements Eventb
             }
             confidence = support * (currentEpsilon / (double) logSize);
 
-           
-    
-
-        //System.out.println("Support(" + constraint.getName() + currentEntry.getKey() + ") = \t\t" + support);
-        //System.out.println("Confidence(" + currentEntry.getKey() + ") = \t" + confidence);
+        
         return new ResultElement(this.getClass().toString(), getEventA(), getEventB(), support, confidence, this.getType());
     }
 

@@ -3,14 +3,14 @@ package mapreduceminer.service;
 import de.ubt.ai4.mapreduceminer.Database;
 import de.ubt.ai4.mapreduceminer.constraint.DoubleEventConstraint;
 import de.ubt.ai4.mapreduceminer.constraint.Eventbased;
-import de.ubt.ai4.mapreduceminer.constraint.FutureBased;
+import de.ubt.ai4.mapreduceminer.constraint.FutureConstraining;
 import de.ubt.ai4.mapreduceminer.model.Event;
 import de.ubt.ai4.mapreduceminer.result.ResultElement;
 import de.ubt.ai4.mapreduceminer.util.AuxiliaryDatabase;
 import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 import mapreduceminer.service.CustomAuxiliaryDatabase;
 
-public class WithinFiveSteps extends DoubleEventConstraint implements Eventbased, FutureBased {
+public class WithinFiveSteps extends DoubleEventConstraint implements Eventbased, FutureConstraining {
 
     public WithinFiveSteps(Event eventA, Event eventB, ConstraintType type) {
         super(eventA, eventB, type);
@@ -45,8 +45,8 @@ public class WithinFiveSteps extends DoubleEventConstraint implements Eventbased
 
         if (!cad.tasksWithinFiveSteps.contains(filteredEventB)) {
             cad.tasksWithinFiveSteps.add(filteredEventB);
-            {System.out.println("true");
-            return true;}
+            System.out.println("true");
+            return true;
         } else
             return false;
         }

@@ -39,210 +39,9 @@ import de.ubt.ai4.mapreduceminer.util.Configuration;
 import de.ubt.ai4.mapreduceminer.util.ConstraintType;
 import de.ubt.ai4.mapreduceminer.util.CustomAuxiliaryDatabase;
 import de.ubt.ai4.mapreduceminer.util.Tuple;
+import de.ubt.ai4.mapreduceminer.util.XesLoader;
 
-public class MinerTest {
-
-    @Test
-    public void precedenceTest() {
-
-        Precedence p = new Precedence();
-        Precedence p2 = new Precedence();
-
-
-        Event e00 = new Event();
-        e00.addAttribute("task", "a");
-        e00.addAttribute("resource", "x");
-        Event e01 = new Event();
-        e01.addAttribute("task", "c");
-        e01.addAttribute("resource", "x");
-
-        Event e10 = new Event();
-        e10.addAttribute("task", "a");
-        e10.addAttribute("resource", "x");
-        Event e11 = new Event();
-        e11.addAttribute("task", "c");
-        e11.addAttribute("resource", "x");
-
-
-        p.setEventA(e00);
-        p.setEventB(e01);
-        p.setType(ConstraintType.ACTIVATION);
-
-        p2.setEventA(e00);
-        p2.setEventB(e01);
-        p2.setType(ConstraintType.ACTIVATION);
-
-        System.out.println("PrecedenceTest " + p.equals(p2));
-
-
-    }
-
-
-
-    @Test
-    public void tupleTest() {
-        Event e00 = new Event();
-        e00.addAttribute("task", "a");
-        e00.addAttribute("resource", "x");
-        Event e01 = new Event();
-        e01.addAttribute("task", "c");
-        e01.addAttribute("resource", "x");
-
-        Event e10 = new Event();
-        e10.addAttribute("task", "c");
-        e10.addAttribute("resource", "x");
-        Event e11 = new Event();
-        e11.addAttribute("task", "a");
-        e11.addAttribute("resource", "x");
-
-        Tuple<Event> t1 = new Tuple<>(e00, e01);
-        Tuple<Event> t2 = new Tuple<>(e10, e11);
-
-        System.out.println(t1.equals(t2));
-
-
-    }
-
-
-@Test 
-public void testCustomConstraintFulfill() {
-
-    EventLog eventLog = new EventLog();
-
-        List<Trace> traces = new ArrayList<>();
-
-        Trace t1 = new Trace();
-        Event e10 = new Event();
-        e10.addAttribute("task", "impl");
-        e10.addAttribute("resource", "x");
-        Event e11 = new Event();
-        e11.addAttribute("task", "test");
-        e11.addAttribute("resource", "x");
-        Event e12 = new Event();
-        e12.addAttribute("task", "test");
-        e12.addAttribute("resource", "y");
-        Event e13 = new Event();
-        e13.addAttribute("task", "final-test");
-        e13.addAttribute("resource", "STE");
-        Event e14 = new Event();
-        e14.addAttribute("task", "deliver");
-        e14.addAttribute("resource", "john");
-        t1.addEvent(e10);
-        t1.addEvent(e11);
-        t1.addEvent(e12);
-        t1.addEvent(e13);
-        t1.addEvent(e14);
-
-      traces.add(t1);
-
-      eventLog.setTraces(traces);
-
-      Configuration configuration = new Configuration();
-      configuration
-              .setEventIdentifier("task")
-              .setAdditionalAttribute("resource")
-              .addConstraint(WithinFiveSteps.class)
-              .setAuxiliaryDatabaseClass(CustomAuxiliaryDatabase.class)
-              .allConstraintTypes();
-
-
-      JobRunner job = new JobRunner(eventLog, configuration);
-      job.run();
-
-      for(ResultElement mr : job.getMiningResult().getResults()) {
-
-        if(mr.getEventA().equals(e11.filter("task")) && mr.getEventB().equals(e13))  {
-            assertEquals(1.0d, mr.getSupport(), 0.01);
-        }
-
-
-        }
-}
-
-
-
-@Test 
-public void testCustomConstraint() {
-
-    EventLog eventLog = new EventLog();
-
-        List<Trace> traces = new ArrayList<>();
-
-        Trace t0 = new Trace();
-        Event e00 = new Event();
-        e00.addAttribute("task", "impl");
-        e00.addAttribute("resource", "x");
-        Event e01 = new Event();
-        e01.addAttribute("task", "test");
-        e01.addAttribute("resource", "z");
-        Event e02 = new Event();
-        e02.addAttribute("task", "test");
-        e02.addAttribute("resource", "y");
-        Event e03 = new Event();
-        e03.addAttribute("task", "test");
-        e03.addAttribute("resource", "x");
-        Event e04 = new Event();
-        e04.addAttribute("task", "test");
-        e04.addAttribute("resource", "z");
-        Event e05 = new Event();
-        e05.addAttribute("task", "test");
-        e05.addAttribute("resource", "y");
-        Event e06 = new Event();
-        e06.addAttribute("task", "test");
-        e06.addAttribute("resource", "x");
-        Event e07 = new Event();
-        e07.addAttribute("task", "final-test");
-        e07.addAttribute("resource", "STE");
-        Event e08 = new Event();
-        e08.addAttribute("task", "deliver");
-        e08.addAttribute("resource", "job");
-        t0.addEvent(e00);
-        t0.addEvent(e01);
-        t0.addEvent(e02);
-        t0.addEvent(e03);
-        t0.addEvent(e04);
-        t0.addEvent(e05);
-        t0.addEvent(e06);
-        t0.addEvent(e07);
-        t0.addEvent(e08);
-        traces.add(t0);
-
-
-      traces.add(t0);
-
-      eventLog.setTraces(traces);
-
-      Configuration configuration = new Configuration();
-      configuration
-              .setEventIdentifier("task")
-              .setAdditionalAttribute("resource")
-              .addConstraint(WithinFiveSteps.class)
-              .setAuxiliaryDatabaseClass(CustomAuxiliaryDatabase.class)
-              .allConstraintTypes();
-
-
-      JobRunner job = new JobRunner(eventLog, configuration);
-      job.run();
-
-      for(ResultElement mr : job.getMiningResult().getResults()) {
-
-        if(mr.getEventA().equals(e01.filter("task")) && mr.getEventB().equals(e07))  {
-            assertNotEquals(1.0d, mr.getSupport(), 0.01);
-        }
-
-
-        }
-}
-
-
-
-    @Test
-    public void test() {
-       
-        System.out.println("RUNNING TESTS");
-     
-           //EventLog eventLog = XesLoader.loadXes("C:\\Users\\bt304947\\Documents\\sampleXes.xes");
-
+/*
            EventLog eventLog = new EventLog();
 
            List<Trace> traces = new ArrayList<>();
@@ -319,17 +118,232 @@ public void testCustomConstraint() {
 
 
            eventLog.setTraces(traces);
+*/
+
+
+public class MinerTest {
+/*
+    @Test
+    public void precedenceTest() {
+
+        Precedence p = new Precedence();
+        Precedence p2 = new Precedence();
+
+
+        Event e00 = new Event();
+        e00.addAttribute("task", "a");
+        e00.addAttribute("resource", "x");
+        Event e01 = new Event();
+        e01.addAttribute("task", "c");
+        e01.addAttribute("resource", "x");
+
+        Event e10 = new Event();
+        e10.addAttribute("task", "a");
+        e10.addAttribute("resource", "x");
+        Event e11 = new Event();
+        e11.addAttribute("task", "c");
+        e11.addAttribute("resource", "x");
+
+
+        p.setEventA(e00);
+        p.setEventB(e01);
+        p.setType(ConstraintType.ACTIVATION);
+
+        p2.setEventA(e00);
+        p2.setEventB(e01);
+        p2.setType(ConstraintType.ACTIVATION);
+
+        System.out.println("PrecedenceTest " + p.equals(p2));
+
+
+    }
+*/
+/*
+
+    @Test
+    public void tupleTest() {
+        Event e00 = new Event();
+        e00.addAttribute("task", "a");
+        e00.addAttribute("resource", "x");
+        Event e01 = new Event();
+        e01.addAttribute("task", "c");
+        e01.addAttribute("resource", "x");
+
+        Event e10 = new Event();
+        e10.addAttribute("task", "c");
+        e10.addAttribute("resource", "x");
+        Event e11 = new Event();
+        e11.addAttribute("task", "a");
+        e11.addAttribute("resource", "x");
+
+        Tuple<Event> t1 = new Tuple<>(e00, e01);
+        Tuple<Event> t2 = new Tuple<>(e10, e11);
+
+        System.out.println(t1.equals(t2));
+
+
+    }
+    */
+/*
+@Test 
+public void testCustomConstraintFulfill() {
+
+    EventLog eventLog = new EventLog();
+
+        List<Trace> traces = new ArrayList<>();
+
+        Trace t1 = new Trace();
+        Event e10 = new Event();
+        e10.addAttribute("task", "impl");
+        e10.addAttribute("resource", "x");
+        Event e11 = new Event();
+        e11.addAttribute("task", "test");
+        e11.addAttribute("resource", "x");
+        Event e12 = new Event();
+        e12.addAttribute("task", "test");
+        e12.addAttribute("resource", "y");
+        Event e13 = new Event();
+        e13.addAttribute("task", "final-test");
+        e13.addAttribute("resource", "STE");
+        Event e14 = new Event();
+        e14.addAttribute("task", "deliver");
+        e14.addAttribute("resource", "john");
+        t1.addEvent(e10);
+        t1.addEvent(e11);
+        t1.addEvent(e12);
+        t1.addEvent(e13);
+        t1.addEvent(e14);
+
+      traces.add(t1);
+
+      eventLog.setTraces(traces);
+
+      Configuration configuration = new Configuration();
+      configuration
+              .setEventIdentifier("task")
+              .setAdditionalAttribute("resource")
+              .addConstraint(WithinFiveSteps.class)
+              .setAuxiliaryDatabaseClass(CustomAuxiliaryDatabase.class)
+              .allConstraintTypes();
+
+
+      JobRunner job = new JobRunner(eventLog, configuration);
+      job.run();
+
+      for(ResultElement mr : job.getMiningResult().getResults()) {
+
+        if(mr.getEventA().equals(e11.filter("task")) && mr.getEventB().equals(e13))  {
+            assertEquals(1.0d, mr.getSupport(), 0.01);
+        }
+
+
+        }
+}
+
+*/
+/*
+@Test 
+public void testCustomConstraint() {
+
+    EventLog eventLog = new EventLog();
+
+        List<Trace> traces = new ArrayList<>();
+
+        Trace t0 = new Trace();
+        Event e00 = new Event();
+        e00.addAttribute("task", "impl");
+        e00.addAttribute("resource", "x");
+        Event e01 = new Event();
+        e01.addAttribute("task", "test");
+        e01.addAttribute("resource", "z");
+        Event e02 = new Event();
+        e02.addAttribute("task", "test");
+        e02.addAttribute("resource", "y");
+        Event e03 = new Event();
+        e03.addAttribute("task", "test");
+        e03.addAttribute("resource", "x");
+        Event e04 = new Event();
+        e04.addAttribute("task", "test");
+        e04.addAttribute("resource", "z");
+        Event e05 = new Event();
+        e05.addAttribute("task", "test");
+        e05.addAttribute("resource", "y");
+        Event e06 = new Event();
+        e06.addAttribute("task", "test");
+        e06.addAttribute("resource", "x");
+        Event e07 = new Event();
+        e07.addAttribute("task", "final-test");
+        e07.addAttribute("resource", "STE");
+        Event e08 = new Event();
+        e08.addAttribute("task", "deliver");
+        e08.addAttribute("resource", "job");
+        t0.addEvent(e00);
+        t0.addEvent(e01);
+        t0.addEvent(e02);
+        t0.addEvent(e03);
+        t0.addEvent(e04);
+        t0.addEvent(e05);
+        t0.addEvent(e06);
+        t0.addEvent(e07);
+        t0.addEvent(e08);
+        traces.add(t0);
+
+
+      traces.add(t0);
+
+      eventLog.setTraces(traces);
+
+      Configuration configuration = new Configuration();
+      configuration
+              .setEventIdentifier("task")
+              .setAdditionalAttribute("resource")
+              .addConstraint(WithinFiveSteps.class)
+              .setAuxiliaryDatabaseClass(CustomAuxiliaryDatabase.class)
+              .allConstraintTypes();
+
+
+      JobRunner job = new JobRunner(eventLog, configuration);
+      job.run();
+
+      for(ResultElement mr : job.getMiningResult().getResults()) {
+
+        if(mr.getEventA().equals(e01.filter("task")) && mr.getEventB().equals(e07))  {
+            assertNotEquals(1.0d, mr.getSupport(), 0.01);
+        }
+
+
+        }
+}
+*/
+
+@Test
+        public void test() {
+       
+        System.out.println("RUNNING TESTS");
+     
+           EventLog eventLog = XesLoader.loadFromFile("C:\\Users\\bt304947\\Downloads\\Hospital_log.xes");
+
+           List<Trace> allTraces = eventLog.getTraces();
+           List<Trace> smallTraces = new ArrayList<>();
+
+           for(int i = 0; i < 5; i++) {
+               smallTraces.add(allTraces.get(i));
+           }
+           EventLog smallEventLog = new EventLog();
+           smallEventLog.setTraces(smallTraces);
+           int blabla =2;
 
         Configuration configuration = new Configuration();
         configuration
-                .setEventIdentifier("task")
-                .setAdditionalAttribute("resource")
-                .allConstraints()
-                .setAuxiliaryDatabaseClass(CustomAuxiliaryDatabase.class)
+                .setEventIdentifier("concept:name")
+                .setAdditionalAttribute("org:group")
+                //.allConstraints()
+                .addConstraint(Response.class)
+                //.setAuxiliaryDatabaseClass(CustomAuxiliaryDatabase.class)
                 .allConstraintTypes();
 
 
-        JobRunner job = new JobRunner(eventLog, configuration);
+        JobRunner job = new JobRunner(smallEventLog, configuration);
         job.run();
 
         for(ResultElement mr : job.getMiningResult().getResults()) {

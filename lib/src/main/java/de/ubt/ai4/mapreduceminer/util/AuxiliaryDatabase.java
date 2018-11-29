@@ -91,7 +91,6 @@ public class AuxiliaryDatabase {
     public void addToEventCounter(Event event) {
         if(eventCounter.containsKey(event)) {
             int currentValue = eventCounter.get(event);
-            System.out.println(event + ", "+currentValue);            
             eventCounter.remove(event);
             eventCounter.put(event, currentValue+1);
         }

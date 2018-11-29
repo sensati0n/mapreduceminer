@@ -41,9 +41,7 @@ public class NotChainSuccession extends DoubleEventConstraint implements Eventba
 
     @Override
     public ResultElement getResult(Database db, double sigma, int logSize) {
-        System.out.println("Constraint: " + this.getEventA() + ", " + this.getEventB());
-        System.out.println("sigmaInit: " + sigma);
-
+      
         Event chainPrecedenceEventA = new Event();
         Event chainPrecedenceEventB = new Event();
 
@@ -66,13 +64,6 @@ public class NotChainSuccession extends DoubleEventConstraint implements Eventba
         break;
         }
 
-        
-        //ACTIVATION (succ(ax, b))
-        /**
-         * re(ax, b) + pr(a, bx)
-         * 
-         * 
-         */
         ChainPrecedence p = new ChainPrecedence();
         p.setEventA(chainPrecedenceEventA);
         p.setEventB(chainPrecedenceEventB);
@@ -81,11 +72,9 @@ public class NotChainSuccession extends DoubleEventConstraint implements Eventba
         int sigmaPrecedence = 0;
         try {
             sigmaPrecedence+=db.getSigmaEntry(ChainPrecedence.class).get(p);
-            System.out.println("sigmaPrecedence: " + db.getSigmaEntry(ChainPrecedence.class).get(p));
 
         }
         catch(NullPointerException npe) {
-            System.out.println("RTFM!");
         }
 
         sigma += sigmaPrecedence;
@@ -97,8 +86,6 @@ public class NotChainSuccession extends DoubleEventConstraint implements Eventba
 
         } catch(NullPointerException npe) {}
 
-        System.out.println("etaA: " + etaA);
-        System.out.println("etaB: " + etaB);
         double supportNew = sigma/(etaA + etaB);
         double support = 1- supportNew;
 
@@ -119,11 +106,7 @@ public class NotChainSuccession extends DoubleEventConstraint implements Eventba
             }
             confidence = support * (currentEpsilon / (double) logSize);
 
-           
-    
 
-        //System.out.println("Support(" + constraint.getName() + currentEntry.getKey() + ") = \t\t" + support);
-        //System.out.println("Confidence(" + currentEntry.getKey() + ") = \t" + confidence);
         return new ResultElement(this.getClass().toString(), getEventA(), getEventB(), support, confidence, this.getType());
     }
 

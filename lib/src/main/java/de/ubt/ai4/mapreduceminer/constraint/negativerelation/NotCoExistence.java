@@ -53,7 +53,6 @@ public class NotCoExistence extends DoubleEventConstraint implements Eventbased 
     @Override
     public ResultElement getResult(Database db, double sigma, int logSize) {
 
-        System.out.println("Calc:" + this.getEventA() + "," + this.getEventB());
         Map.Entry<Constraint, Integer> secondSigmaConstraint = null;
 
         Event fantasieEvent = new Event();
@@ -82,19 +81,15 @@ public class NotCoExistence extends DoubleEventConstraint implements Eventbased 
                     }).collect(Collectors.toList());
                    
                     if(list.size()>0) {
-                        System.out.println("List>0!!!");
                         secondSigmaConstraint = list.get(0);
                     }
 
 
            
-                    System.out.println("fEvent" + fantasieEvent);
                     try {
                         etaB = db.getEta().get(fantasieEvent);
-                        System.out.println("etaB:" + etaB);
                     }
                    catch(NullPointerException npw) {
-                    System.out.println("'ETA EXCEPTION");
                     
                    }
         
@@ -105,14 +100,9 @@ public class NotCoExistence extends DoubleEventConstraint implements Eventbased 
                 }
                 catch(NullPointerException npe) {
                     //No partner found
-                    System.out.println("EXCEPTION");
         
                 }
         
-        
-                System.out.println("etaA:" + etaA);
-        
-                System.out.println("SigmaNeu:" + sigma);
         
                 support = sigma / (etaA+etaB);
 
@@ -125,10 +115,8 @@ public class NotCoExistence extends DoubleEventConstraint implements Eventbased 
         
                 }
                 catch(NullPointerException npe) {
-                    System.out.println("NPEE!!!");
         
                 }
-                System.out.println("currentEps:" + currentEpsilon);
 
                 confidence = support * (currentEpsilon / (double) logSize);
 
@@ -152,20 +140,16 @@ public class NotCoExistence extends DoubleEventConstraint implements Eventbased 
                 
                 }).collect(Collectors.toList());
                 if(listTarget.size()>0) {
-                    System.out.println("List>0!!!");
 
                     secondSigmaConstraint = listTarget.get(0);
                 }
                 
                 
            
-                System.out.println("fEvent" + ev);
                 try {
                     etaB = db.getEta().get(ev);
-                    System.out.println("etaB:" + etaB);
                 }
                catch(NullPointerException npw) {
-                System.out.println("'ETA EXCEPTION");
                 
                }
     
@@ -176,14 +160,9 @@ public class NotCoExistence extends DoubleEventConstraint implements Eventbased 
             }
             catch(NullPointerException npe) {
                 //No partner found
-                System.out.println("EXCEPTION");
     
             }
     
-    
-            System.out.println("etaA:" + etaA);
-    
-            System.out.println("SigmaNeu:" + sigma);
     
             support = sigma / (etaA+etaB);
 
@@ -203,11 +182,6 @@ public class NotCoExistence extends DoubleEventConstraint implements Eventbased 
                 break;
             }
 
-           
-    
-
-        //System.out.println("Support(" + constraint.getName() + currentEntry.getKey() + ") = \t\t" + support);
-        //System.out.println("Confidence(" + currentEntry.getKey() + ") = \t" + confidence);
         return new ResultElement(this.getClass().toString(), getEventA(), getEventB(), support, confidence, this.getType());
     }
 
